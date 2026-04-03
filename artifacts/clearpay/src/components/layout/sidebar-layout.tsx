@@ -9,9 +9,11 @@ import {
   LogOut,
   Target,
   Shield,
+  Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/", adminOnly: false },
@@ -25,7 +27,7 @@ const navItems = [
 
 export function SidebarLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
-  const { user, isAdmin, logout } = useAuth();
+  const { user, isAdmin, logout, idleWarning, extendSession } = useAuth();
 
   const visibleNav = navItems.filter(item => !item.adminOnly || isAdmin);
 
@@ -94,6 +96,37 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+
+      {idleWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl p-8 max-w-sm w-full mx-4 flex flex-col items-center gap-5">
+            <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center">
+              <Clock className="w-7 h-7 text-primary" />
+            </div>
+            <div className="text-center space-y-2">
+              <h2 className="text-white text-lg font-semibold">Still there?</h2>
+              <p className="text-zinc-400 text-sm">
+                You'll be signed out in 2 minutes due to inactivity. Click below to stay logged in.
+              </p>
+            </div>
+            <div className="flex gap-3 w-full">
+              <Button
+                variant="outline"
+                className="flex-1 border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+                onClick={() => logout()}
+              >
+                Sign Out
+              </Button>
+              <Button
+                className="flex-1 bg-primary hover:bg-primary/90 text-black font-semibold"
+                onClick={extendSession}
+              >
+                Stay Logged In
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
