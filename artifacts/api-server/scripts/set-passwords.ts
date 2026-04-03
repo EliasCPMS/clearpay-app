@@ -12,9 +12,13 @@ import bcrypt from "bcryptjs";
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import { eq } from "drizzle-orm";
+import { config as loadDotenv } from "dotenv";
 import * as schema from "../../../lib/db/src/schema";
 
 const { Pool } = pg;
+
+// Load monorepo root .env for local development.
+loadDotenv({ path: new URL("../../../.env", import.meta.url).pathname });
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required");
