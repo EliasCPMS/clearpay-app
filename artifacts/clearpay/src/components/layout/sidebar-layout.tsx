@@ -32,11 +32,13 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden">
       <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col text-sidebar-foreground">
-        <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
-          <div className="flex items-center gap-2 text-primary">
-            <Target className="w-6 h-6" />
-            <span className="font-bold text-xl tracking-tight text-white">ClearPay</span>
-          </div>
+        <div className="py-3 flex items-center justify-center border-b border-sidebar-border">
+          <img
+            src={`${import.meta.env.BASE_URL}clearpay-logo.png`}
+            alt="ClearPay Merchant Solutions"
+            className="w-full h-auto px-0"
+            style={{ filter: "invert(1) hue-rotate(180deg)" }}
+          />
         </div>
 
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
