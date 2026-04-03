@@ -83,6 +83,8 @@ if (!sessionSecret) {
   throw new Error("SESSION_SECRET environment variable is required");
 }
 
+const SESSION_IDLE_MS = 8 * 60 * 60 * 1000; // 8 hours of inactivity
+
 app.use(
   session({
     store: new PgSession({
@@ -93,8 +95,9 @@ app.use(
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
+    rolling: true,
     cookie: {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: SESSION_IDLE_MS,
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
