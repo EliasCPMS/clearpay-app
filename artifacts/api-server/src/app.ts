@@ -12,6 +12,8 @@ const PgSession = connectPgSimple(session);
 
 const app: Express = express();
 
+app.set("trust proxy", 1);
+
 app.use(
   pinoHttp({
     logger,
@@ -32,18 +34,48 @@ app.use(
   }),
 );
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-  : ["http://localhost:21083", process.env.FRONTEND_URL ?? ""].filter(Boolean);
+const allowedOriginsFromEnv = (process.env.ALLOWED_ORIGINS ?? "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter((o) => o.startsWith("http"));
+
+const replitDomainOrigins = (process.env.REPLIT_DOMAINS ?? "")
+  .split(",")
+  .map((d) => d.trim())
+  .filter(Boolean)
+  .map((d) => `https://${d}`);
+
+const devOrigins =
+  process.env.NODE_ENV !== "production"
+    ? ["http://localhost:21083", process.env.FRONTEND_URL ?? ""].filter(Boolean)
+    : [];
+
+const allowedOrigins = [
+  ...new Set([...allowedOriginsFromEnv, ...replitDomainOrigins, ...devOrigins]),
+];
 
 app.use(
   cors({
-    origin: (origin, cb) => cb(null, true),
+    origin: (origin, cb) => {
+      if (!origin) {
+        cb(null, true);
+        return;
+      }
+      if (allowedOrigins.includes(origin)) {
+        cb(null, true);
+      } else {
+        cb(new Error(`CORS: origin '${origin}' not allowed`));
+      }
+    },
     credentials: true,
   }),
 );
 
-app.use(express.json());
+app.use(express.json({
+  verify: (req, _res, buf) => {
+    (req as express.Request & { rawBody?: Buffer }).rawBody = buf;
+  },
+}));
 app.use(express.urlencoded({ extended: true }));
 
 const sessionSecret = process.env.SESSION_SECRET;
