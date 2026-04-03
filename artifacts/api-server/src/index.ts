@@ -1,5 +1,9 @@
+import { config as loadDotenv } from "dotenv";
 import app from "./app";
 import { logger } from "./lib/logger";
+
+// Load monorepo root .env for local development.
+loadDotenv({ path: new URL("../../../.env", import.meta.url).pathname });
 
 const rawPort = process.env["PORT"];
 

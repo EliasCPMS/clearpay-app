@@ -1,8 +1,12 @@
+import { config as loadDotenv } from "dotenv";
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import * as schema from "./schema";
 
 const { Pool } = pg;
+
+// Load monorepo root .env for local development.
+loadDotenv({ path: new URL("../../../.env", import.meta.url).pathname });
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
