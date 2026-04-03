@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Target, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 export default function Login() {
   const { login } = useAuth();
@@ -27,16 +27,14 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col justify-center items-center p-4">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="flex flex-col items-center justify-center space-y-2 text-center">
-          <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mb-4">
-            <Target className="w-8 h-8 text-black" />
-          </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">ClearPay</h1>
-          <p className="text-gray-400 text-sm">Sales Command Center</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-950 p-8 rounded-xl border border-zinc-800 shadow-2xl">
+      <div className="w-full max-w-sm flex flex-col items-center gap-3">
+        <img
+          src={`${import.meta.env.BASE_URL}clearpay-logo.png`}
+          alt="ClearPay Merchant Solutions"
+          className="h-64 w-auto"
+          style={{ filter: "invert(1) hue-rotate(180deg)" }}
+        />
+        <form onSubmit={handleSubmit} className="w-full space-y-6 bg-zinc-950 px-8 pt-6 pb-8 rounded-xl border border-zinc-800 shadow-2xl">
           {error && (
             <div className="flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-3">
               <AlertCircle className="w-4 h-4 shrink-0" />
