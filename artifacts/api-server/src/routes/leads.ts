@@ -35,7 +35,7 @@ import {
   recalculateLeadScoreById,
   updateLeadById,
 } from "../services/leads.service";
-import { requireAuth } from "../middlewares/auth";
+import { requireAuth, requireAuthOrApiKey } from "../middlewares/auth";
 
 const router: IRouter = Router();
 
@@ -68,7 +68,7 @@ router.post("/leads", asyncRoute(async (req, res): Promise<void> => {
   res.status(201).json(GetLeadResponse.parse(lead));
 }));
 
-router.post("/leads/import", requireAuth, asyncRoute(async (req, res): Promise<void> => {
+router.post("/leads/import", requireAuthOrApiKey, asyncRoute(async (req, res): Promise<void> => {
   const parsed = ImportLeadsBodySchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
